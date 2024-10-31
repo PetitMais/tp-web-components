@@ -1,15 +1,19 @@
 class CurrentTime extends HTMLElement {
     static observedAttributes = ['format'];
+
     connectedCallback() {
+        this.format = this.getAttribute("format");
         this.innerHTML =
-            `<p class="currentTime__title">Heure ${this.getAttribute("format") ?? "locale"}</p> 
+            `<p class="currentTime__title"></p> 
             <time class="currentTime__time"></time>`;
-        this.$title = this.querySelector("title");
+        this.$title = this.querySelector("p");
         this.$time = this.querySelector("time");
-        this.$utc = this.getAttribute("format");
+        this.renderTitle();
+        console.log(this.renderTitle());
+
         setInterval(
             () => {
-                if (this.$utc === "UTC") {
+                if (this.format === "UTC") {
                     this.$time.innerHTML = new Date().toUTCString()
                 } else {
                     this.$time.innerHTML = new Date().toLocaleString()
@@ -18,12 +22,24 @@ class CurrentTime extends HTMLElement {
 
     };
     attributeChangedCallback(name, oldValue, newValue) {
-        this.title.innerHTML = `Heure ${this.getAttribute("format") ?? "locale"}`
+        if (name === "format") {
+            this.format = newValue;
+
+            this.renderTitle();
+        }
     }
 
     disconnectedCallback() {
         console.log(this.$time);
     };
+
+    renderTitle() {
+        if (this.$title) {
+            this.$title.textContent = this.format === "UTC"
+                ? "Heure UTC"
+                : "Heure locale";     
+        }
+    }
 
 
 };
