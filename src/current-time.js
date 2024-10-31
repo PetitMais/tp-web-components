@@ -1,9 +1,10 @@
 class CurrentTime extends HTMLElement {
-    static observedAttributes;
+    static observedAttributes = ['format'];
     connectedCallback() {
         this.innerHTML =
             `<p class="currentTime__title">Heure ${this.getAttribute("format") ?? "locale"}</p> 
             <time class="currentTime__time"></time>`;
+        this.$title = this.querySelector("title");
         this.$time = this.querySelector("time");
         this.$utc = this.getAttribute("format");
         setInterval(
@@ -17,10 +18,7 @@ class CurrentTime extends HTMLElement {
 
     };
     attributeChangedCallback(name, oldValue, newValue) {
-        this.render();
-    }
-    static get observedAttributes() { 
-        return ['format']; 
+        this.title.innerHTML = `Heure ${this.getAttribute("format") ?? "locale"}`
     }
 
     disconnectedCallback() {
